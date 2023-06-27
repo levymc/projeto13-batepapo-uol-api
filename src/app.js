@@ -2,7 +2,6 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import Joi from 'joi';
 import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
@@ -82,12 +81,17 @@ app.post('/messages', (req, res) => {
 
 app.get('/messages', (req, res) => {
     let { limit } = req.query
-    limit = parseInt(limit);
+    limit = parseInt(limit)
+    const { error } = schemaLimit.validate({ limit })
 
-    if (limit){
-        res.status(201).send(`${limit}`)
+    if(error){
+        return res.status(422).json({ error: error.details[0].message });
     }else{
-        res.status(201).send("ALL")
+        if (limit){
+            res.status(201).send(`${limit}`)
+        }else{
+            res.status(201).send("ALL")
+        }
     }
 })
 

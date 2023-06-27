@@ -1,3 +1,6 @@
+import Joi from 'joi';
+import { arrayCadastro } from './varDec.js';
+
 
 export const schemaName = Joi.object().keys({
     name: Joi.string().min(1).required(),
