@@ -8,19 +8,21 @@ import { arrayCadastro } from './varDec.js';
 dotenv.config();
 const app = express();
 
-// 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
-
 app.use(cors());
 app.use(express.json());
 
-const schema = Joi.object({
-    name: Joi.string().min(1).required()
+const schemaName = Joi.object().keys({
+    name: Joi.string().min(1).required(),
 });
+const schemaMessage = Joi.object().keys({
+    to: Joi.string().min(1).required(),
+    text: Joi.string().min(1).required(),
+    type: Joi.string().valid('message', 'private_message').required(),
+    from: Joi.string().required().valid(...arrayCadastro.map(participant => participant.name))
+});
+  
 
-const url = 'mongodb://127.0.0.1:27017';
-const dbName = 'FirstDB';
-
-const mongoClient = new MongoClient(url, { useUnifiedTopology: false });
+// const mongoClient = new MongoClient(process.env.DATABASE_URL, { useUnifiedTopology: false });
 
 const run = async () => {
   try {
@@ -39,7 +41,7 @@ const run = async () => {
 app.post('/participants', (req, res) => {
     const { name } = req.body;
   
-    const { error } = schema.validate({ name });
+    const { error } = schemaName.validate({ name });
 
     if (error) {
         return res.status(422).json({ error: error.details[0].message });
@@ -63,10 +65,33 @@ app.get('/participants', (req, res) => {
     return res.send(arrayCadastro)
 });
 
+
+app.post('/messages', (req, res) => {
+    const { to, text, type } = req.body
+    const from = req.headers.user;
+
+    const { error } = schemaMessage.validate({ to, text, type, from });
+
+    if (error){
+        return res.status(422).json({ error: error.details[0].message });
+    }else{
+        const message = {
+            from,
+            to,
+            text,
+            type
+        };  
+    
+        return res.status(200).send("Ok")
+    }
+})
+
+
+
   
 app.listen(process.env.PORT, () => {
     console.log(`Servidor Express rodando na url: http://localhost:${process.env.PORT}`);
 });
 
 
-export default mongoClient;
+// export default mongoClient;
