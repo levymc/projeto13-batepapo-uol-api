@@ -80,6 +80,8 @@ app.post('/messages', (req, res) => {
 })
 
 app.get('/messages', (req, res) => {
+    const { user } = req.headers
+
     let { limit } = req.query
     limit = parseInt(limit)
     const { error } = schemaLimit.validate({ limit })
@@ -88,7 +90,7 @@ app.get('/messages', (req, res) => {
         return res.status(422).json({ error: error.details[0].message });
     }else{
         if (limit){
-            res.status(201).send(`${limit}`)
+            res.status(201).send(`Limite: ${limit}, User ${user}`)
         }else{
             res.status(201).send("ALL")
         }
@@ -96,6 +98,7 @@ app.get('/messages', (req, res) => {
 })
 
 
+// app.post('/status')
 
   
 app.listen(process.env.PORT, () => {
