@@ -4,6 +4,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import Joi from 'joi';
 import { arrayCadastro } from './varDec.js';
+import dayjs from 'dayjs'
+
 
 dotenv.config();
 const app = express();
@@ -79,10 +81,11 @@ app.post('/messages', (req, res) => {
             from,
             to,
             text,
-            type
+            type,
+            time: dayjs().format('HH:mm:s')
         };  
-    
-        return res.status(200).send("Ok")
+        console.log("Mensagem: ", message)
+        return res.status(200).send(message)
     }
 })
 
