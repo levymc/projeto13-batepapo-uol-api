@@ -6,7 +6,6 @@ import Joi from 'joi';
 import { arrayCadastro } from './varDec.js';
 
 dotenv.config();
-
 const app = express();
 
 app.use(cors());
@@ -45,8 +44,12 @@ app.post('/participants', (req, res) => {
     }else{
         if (!arrayCadastro.find(element => element.name === name)){
             arrayCadastro.push({name:name})
+            console.log(arrayCadastro)
+            return res.sendStatus(201)
+        }else{
+            console.log('Erro 409')
+            return res.sendStatus(409)
         }
-        console.log(arrayCadastro)
     }
     // const cliente = new Cliente(documento);
   
@@ -63,8 +66,7 @@ app.post('/participants', (req, res) => {
 });
   
 app.listen(process.env.PORT, () => {
-    console.log(process.env.DATABASE_URL+":"+process.env.PORT)
-    console.log(`Servidor Express rodando na porta ${process.env.PORT}`);
+    console.log(`Servidor Express rodando na url: http://localhost:${process.env.PORT}`);
 });
 
 // run();
