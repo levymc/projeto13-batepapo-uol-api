@@ -15,17 +15,17 @@ app.use(cors());
 app.use(express.json());
 
 
-// const mongoClient = new MongoClient(process.env.DATABASE_URL, { useUnifiedTopology: false });
+const mongoClient = new MongoClient(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const run = async () => {
   try {
-    await mongoClient.connect();
-    console.log('Conexão com o MongoDB estabelecida com sucesso');
-    app.listen(process.env.PORT, () => {
-      console.log(`Servidor Express rodando na porta ${process.env.PORT}`);
-    });
+    await mongoClient.connect()
+    console.log('Conexão!!!')
+    // app.listen(process.env.PORT, () => {
+    //   console.log(`Servidor Express rodando na porta ${process.env.PORT}`)
+    // })
   } catch (err) {
-    console.error('Erro ao conectar ao MongoDB:', err);
+    console.error('Erro ao conectar no banco:', err)
   }
 };
 
@@ -117,5 +117,7 @@ app.listen(process.env.PORT, () => {
     console.log(`Servidor Express rodando na url: http://localhost:${process.env.PORT}`);
 });
 
+// console.log(process.env.PORT, process.env.DATABASE_URL)
 
-// export default mongoClient;
+run()    
+export default mongoClient;
