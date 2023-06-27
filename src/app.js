@@ -43,7 +43,10 @@ app.post('/participants', (req, res) => {
         return res.status(422).json({ error: error.details[0].message });
     }else{
         if (!arrayCadastro.find(element => element.name === name)){
-            arrayCadastro.push({name:name})
+            arrayCadastro.push({
+                name: name,
+                lastStatus: Date.now()
+            })
             console.log(arrayCadastro)
             return res.sendStatus(201)
         }else{
@@ -51,28 +54,13 @@ app.post('/participants', (req, res) => {
             return res.sendStatus(409)
         }
     }
-    // const cliente = new Cliente(documento);
-  
-    // // Salvar o cliente no banco de dados
-    // cliente.save()
-    //   .then((result) => {
-    //     console.log('Documento inserido com sucesso:', result._id);
-    //     res.status(200).send('Documento inserido com sucesso');
-    //   })
-    //   .catch((err) => {
-    //     console.error('Erro ao inserir documento:', err);
-    //     res.status(500).send('Erro ao inserir documento');
-    //   });
 });
+
+
   
 app.listen(process.env.PORT, () => {
     console.log(`Servidor Express rodando na url: http://localhost:${process.env.PORT}`);
 });
-
-// run();
-
-
-
 
 
 export default mongoClient;
