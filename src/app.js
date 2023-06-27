@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import Joi from 'joi';
 import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
+import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
 
 
 dotenv.config();
@@ -13,16 +14,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const schemaName = Joi.object().keys({
-    name: Joi.string().min(1).required(),
-});
-const schemaMessage = Joi.object().keys({
-    to: Joi.string().min(1).required(),
-    text: Joi.string().min(1).required(),
-    type: Joi.string().valid('message', 'private_message').required(),
-    from: Joi.string().required().valid(...arrayCadastro.map(participant => participant.name))
-});
-  
 
 // const mongoClient = new MongoClient(process.env.DATABASE_URL, { useUnifiedTopology: false });
 
@@ -90,9 +81,11 @@ app.post('/messages', (req, res) => {
 })
 
 app.get('/messages', (req, res) => {
-    const { limit } = req.query
+    let { limit } = req.query
+    limit = parseInt(limit);
+
     if (limit){
-        res.status(201).send(limit)
+        res.status(201).send(`${limit}`)
     }else{
         res.status(201).send("ALL")
     }
