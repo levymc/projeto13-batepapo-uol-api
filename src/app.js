@@ -85,7 +85,16 @@ app.post('/messages', (req, res) => {
             time: dayjs().format('HH:mm:s')
         };  
         console.log("Mensagem: ", message)
-        return res.status(200).send(message)
+        return res.status(201).send(message)
+    }
+})
+
+app.get('/messages', (req, res) => {
+    const { limit } = req.query
+    if (limit){
+        res.status(201).send(limit)
+    }else{
+        res.status(201).send("ALL")
     }
 })
 
