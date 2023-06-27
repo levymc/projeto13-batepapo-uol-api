@@ -8,6 +8,8 @@ import { arrayCadastro } from './varDec.js';
 dotenv.config();
 const app = express();
 
+// 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
+
 app.use(cors());
 app.use(express.json());
 
@@ -56,6 +58,10 @@ app.post('/participants', (req, res) => {
     }
 });
 
+app.get('/participants', (req, res) => {
+    console.log(arrayCadastro)
+    return res.send(arrayCadastro)
+});
 
   
 app.listen(process.env.PORT, () => {
