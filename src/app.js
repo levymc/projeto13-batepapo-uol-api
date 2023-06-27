@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
-import { array } from 'joi';
+
 
 
 dotenv.config();
@@ -81,7 +81,7 @@ app.post('/messages', (req, res) => {
 })
 
 app.get('/messages', (req, res) => {
-    const { User } = req.headers
+    const { user } = req.headers
 
     let { limit } = req.query
     limit = parseInt(limit)
@@ -91,7 +91,7 @@ app.get('/messages', (req, res) => {
         return res.status(422).json({ error: error.details[0].message });
     }else{
         if (limit){
-            res.status(201).send(`Limite: ${limit}, User ${User}`)
+            res.status(201).send(`Limite: ${limit}, User: ${user}`)
         }else{
             res.status(201).send("ALL")
         }
