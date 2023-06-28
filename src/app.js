@@ -43,7 +43,7 @@ app.post('/participants', async (req, res) => {
     if (error) {
         return res.status(422).json({ error: error.details[0].message });
     } else {
-        const participant = await db.collection("participants").findOne({ name: { $eq: name } });
+        const participant = await db.collection("participants").findOne({ name: { $eq: name } })
         
         if (!participant) {
             console.log("oi")
@@ -63,9 +63,10 @@ app.post('/participants', async (req, res) => {
     }
   });
 
-app.get('/participants', (req, res) => {
-    console.log(arrayCadastro)
-    return res.send(arrayCadastro)
+app.get('/participants', async (req, res) => {
+    const participantsList = await db.collection("participants").find().toArray()
+    console.log(participantsList)
+    return res.send(participantsList)
 });
 
 
