@@ -43,16 +43,24 @@ app.post('/participants', async (req, res) => {
         const participant = await db.collection("participants").findOne({ name: { $eq: name } })
         
         if (!participant) {
-            console.log("oi")
-            // arrayCadastro.push({
-                // name: name,
-                // lastStatus: Date.now()
-            // });
+            const message = { 
+                from: name,
+                to: 'Todos',
+                text: 'entra na sala...',
+                type: 'status',
+                time: dayjs().format('HH:mm:s')
+            }
+            
             db.collection("participants").insertOne({
                 name: name,
                 lastStatus: Date.now()
             }).then(resDB => {
-                res.sendStatus(201)
+                db.collection("messages").insertOne(message).then(() => {
+                    console.log("LOGADO!")
+                    res.sendStatus(201)
+                }).catch(err => {
+                    res.status(500).send(err.message)
+                })
             }).catch(err => {
                 res.status(500).send(err.message)
             })
