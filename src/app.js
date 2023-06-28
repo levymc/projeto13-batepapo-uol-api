@@ -65,7 +65,7 @@ app.post('/participants', async (req, res) => {
 
 app.get('/participants', async (req, res) => {
     const participantsList = await db.collection("participants").find().toArray()
-    console.log(participantsList)
+    // console.log(participantsList)
     return res.send(participantsList)
 });
 
