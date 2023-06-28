@@ -10,8 +10,8 @@ export const schemaMessage = Joi.object().keys({
     to: Joi.string().min(1).required().valid(...arrayCadastro.map(participant => participant.name)),
     text: Joi.string().min(1).required(),
     type: Joi.string().valid('message', 'private_message').required(),
-    from: Joi.string().required().valid(Joi.ref('$fromNames'))
-}).with('from', '$fromNames');
+    from: Joi.string().required()
+})
   
 
 export const schemaLimit = Joi.object().keys({

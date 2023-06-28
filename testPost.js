@@ -7,7 +7,7 @@ import axios from 'axios'
 // })
 
 const headers = {
-    User: 'João'
+    User: 'levy'
 };
 
 axios.post('http://localhost:5000/messages',{
