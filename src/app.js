@@ -11,6 +11,7 @@ import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
 dotenv.config();
 const app = express();
 
+console.log(process.env.PORT)
 app.use(cors());
 app.use(express.json());
 
