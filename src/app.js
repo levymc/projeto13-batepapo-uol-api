@@ -54,8 +54,12 @@ app.post('/participants', async (req, res) => {
             db.collection("participants").insertOne({
                 name: name,
                 lastStatus: Date.now()
-            });
-            return res.sendStatus(201);
+            }).then(resDB => {
+                res.sendStatus(201)
+            }).catch(err => {
+                res.status(500).send(err.message)
+            })
+            
         } else {
             console.log('Erro 409 - já cadastrado!');
             return res.status(409).send("Já cadastrado!")
@@ -86,6 +90,7 @@ app.post('/messages', (req, res) => {
             type,
             time: dayjs().format('HH:mm:s')
         };  
+        db.collection("messages").insertOne(message)
         console.log("Mensagem: ", message)
         return res.status(201).send(`${message}`)
     }
