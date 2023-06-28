@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 
-const mongoClient = new MongoClient('mongodb://127.0.0.1:27017')
+const mongoClient = new MongoClient(process.env.DATABASE_URL)
 let db ;
 
 const run = async () => {
