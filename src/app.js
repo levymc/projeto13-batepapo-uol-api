@@ -35,13 +35,10 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     const { name } = req.body;
-  
     const { error } = schemaName.validate({ name });
   
-    console.log(arrayCadastro, "Cadastro");
-  
     if (error) {
-        return res.status(422).json({ error: error.details[0].message });
+        return res.sendStatus(422)
     } else {
         const participant = await db.collection("participants").findOne({ name: { $eq: name } })
         
@@ -81,7 +78,7 @@ app.post('/messages', (req, res) => {
     const { error } = schemaMessage.validate({ to, text, type, from });
 
     if (error){
-        return res.status(422).json({ error: error.details[0].message });
+        return res.status(422).send("Erro 422 na rota post /messages")
     }else{
         const message = {
             from,
@@ -90,9 +87,13 @@ app.post('/messages', (req, res) => {
             type,
             time: dayjs().format('HH:mm:s')
         };  
-        db.collection("messages").insertOne(message)
-        console.log("Mensagem: ", message)
-        return res.status(201).send(`${message}`)
+        db.collection("messages").insertOne(message).then(() =>{
+            console.log("Mensagem: ", message)
+            return res.status(201).send(`${message}`)
+        }).catch(err => {
+            console.log(err.message)
+            return res.status(409).send("Ocorreu algum erro no Banco.")
+        })
     }
 })
 
