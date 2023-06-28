@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
 
 
-
 dotenv.config();
 const app = express();
 
@@ -22,7 +21,6 @@ let db ;
 const run = async () => {
   try {
     await mongoClient.connect().then(() => {
-        db = mongoClient.db()
         console.log('Conexão!!!')
     })
     app.listen(process.env.PORT, () => {
@@ -31,31 +29,39 @@ const run = async () => {
   } catch (err) {
     console.error('Erro ao conectar no banco:', err)
   }
+  db =  mongoClient.db()
 };
 
 
-
-app.post('/participants', (req, res) => {
+app.post('/participants', async (req, res) => {
     const { name } = req.body;
   
     const { error } = schemaName.validate({ name });
-
+  
+    console.log(arrayCadastro, "Cadastro");
+  
     if (error) {
         return res.status(422).json({ error: error.details[0].message });
-    }else{
-        if (!arrayCadastro.find(element => element.name === name)){
-            arrayCadastro.push({
+    } else {
+        const participant = await db.collection("participants").findOne({ name: { $eq: name } });
+        
+        if (!participant) {
+            console.log("oi")
+            // arrayCadastro.push({
+                // name: name,
+                // lastStatus: Date.now()
+            // });
+            db.collection("participants").insertOne({
                 name: name,
                 lastStatus: Date.now()
-            })
-            console.log(arrayCadastro)
-            return res.sendStatus(201)
-        }else{
-            console.log('Erro 409')
-            return res.sendStatus(409)
+            });
+            return res.sendStatus(201);
+        } else {
+            console.log('Erro 409 - já cadastrado!');
+            return res.status(409).send("Já cadastrado!")
         }
     }
-});
+  });
 
 app.get('/participants', (req, res) => {
     console.log(arrayCadastro)
@@ -80,7 +86,7 @@ app.post('/messages', (req, res) => {
             time: dayjs().format('HH:mm:s')
         };  
         console.log("Mensagem: ", message)
-        return res.status(201).send(message)
+        return res.status(201).send(`${message}`)
     }
 })
 
