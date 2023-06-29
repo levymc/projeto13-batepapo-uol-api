@@ -40,35 +40,28 @@ app.post('/participants', async (req, res) => {
     if (error) {
         return res.sendStatus(422)
     } else {
-        const participant = await db.collection("participants").findOne({ name: { $eq: name } })
-        
-        if (!participant) {
-            const message = { 
-                from: name,
-                to: 'Todos',
-                text: 'entra na sala...',
-                type: 'status',
-                time: dayjs().format('HH:mm:s')
+        try{
+            const participant = await db.collection("participants").findOne({ name: { $eq: name } })
+            if (!participant) {
+                const message = { 
+                    from: name,
+                    to: 'Todos',
+                    text: 'entra na sala...',
+                    type: 'status',
+                    time: dayjs().format('HH:mm:s')
+                }
+                await db.collection("participants").insertOne({ name: name, lastStatus: Date.now() })
+                await db.collection("messages").insertOne(message)
+                res.sendStatus(201)
+                
+            } else {
+                console.log('Erro 409 - já cadastrado!');
+                return res.status(409).send("Já cadastrado!")
             }
-            
-            db.collection("participants").insertOne({
-                name: name,
-                lastStatus: Date.now()
-            }).then(resDB => {
-                db.collection("messages").insertOne(message).then(() => {
-                    console.log("LOGADO!")
-                    res.sendStatus(201)
-                }).catch(err => {
-                    res.status(500).send(err.message)
-                })
-            }).catch(err => {
-                res.status(500).send(err.message)
-            })
-            
-        } else {
-            console.log('Erro 409 - já cadastrado!');
-            return res.status(409).send("Já cadastrado!")
+        }catch(err){
+            res.status(500).send(err.message)
         }
+        
     }
   });
 
