@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
+import { strict as assert } from "assert";
+import { stripHtml } from "string-strip-html";
+
 
 
 dotenv.config();
@@ -33,6 +36,7 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     const { name } = req.body;
+    name = stripHtml(name).result
     const { error } = schemaName.validate({ name });
   
     if (error) {
@@ -72,6 +76,10 @@ app.get('/participants', async (req, res) => {
 app.post('/messages', async (req, res) => {
     const { to, text, type } = req.body
     const from = req.headers.user
+    to = stripHtml(to).result
+    text = stripHtml(text).result
+    type = stripHtml(type).result
+    from = stripHtml(from).result
 
     const participant = await db.collection("participants").findOne({ name: { $eq: from } })
     const { error } = schemaMessage.validate({ to, text, type, from });
@@ -172,4 +180,3 @@ setInterval(async () => {
 }, 10000)
 
 run()    
-// export default mongoClient;
