@@ -40,7 +40,7 @@ app.post('/participants', async (req, res) => {
         return res.sendStatus(422)
     } else {
         try{
-            const participant = await db.collection("participants").findOne({ name: { $eq: name } })
+            const participant = await db.collection("participants").findOne({ name: name })
             if (!participant) {
                 const message = { 
                     from: name,
@@ -72,7 +72,7 @@ app.get('/participants', async (req, res) => {
 
 app.post('/messages', async (req, res) => {
     const { to, text, type } = req.body
-    const from = req.headers.user;
+    const from = req.headers.user
 
     const participant = await db.collection("participants").findOne({ name: { $eq: from } })
     const { error } = schemaMessage.validate({ to, text, type, from });
@@ -97,6 +97,7 @@ app.post('/messages', async (req, res) => {
         }
     }
 })
+
 
 app.get('/messages', async (req, res) => {
     const { user } = req.headers
@@ -126,17 +127,24 @@ app.get('/messages', async (req, res) => {
 })
 
 
-app.post('/status', (req, res) => {
-    const { User } = req.headers
-    if ( !User || !arrayCadastro.find(element => element.name === User) ){
-        return res.sendStatus(404)
-    }else{
-        const infoUser = arrayCadastro.find(element => element.name === User);
-        if (infoUser) {
-            infoUser.lastStatus = Date.now();
+app.post('/status', async (req, res) => {
+    const user = req.headers.user
+    console.log(user)
+    try{
+        const participant = await db.collection("participants").findOne({ name: user })
+        console.log(participant)
+    
+        if ( !user || !participant ){
+            return res.sendStatus(404)
+        }else{
+            participant.lastStatus = Date.now();
+            return res.sendStatus(200)
         }
-        return res.sendStatus(200)
+    }catch(err){
+        console.error("Erro: ", err.message)
+        return res.status(500).send(err.message)
     }
+    
 })
 
   
