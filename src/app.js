@@ -149,9 +149,24 @@ app.post('/status', async (req, res) => {
 
 
 setInterval(async () => {
-    const participants = await db.collection("participants").find({lastStatus:{ $lte: Date.now() - 10000 }}).toArray()
-    console.log(participants)
-    }, 10000)
-// console.log(process.env.PORT, process.env.DATABASE_URL)
+    try{
+        const participants = await db.collection("participants").find({lastStatus:{ $lte: Date.now() - 10000 }}).toArray()
+        if(participants){
+            participants.forEach(async element => {
+                await db.collection("messages").insertOne({
+                    from: element.name,
+                    to: 'Todos',
+                    text: 'sai da sala...',
+                    type: 'status',
+                    time: dayjs().format('HH:mm:s')
+                })
+                await db.collection("participants").deleteOne({ _id: new ObjectId(element._id) }).then(() => {console.log(`${element.name} foi removído da sessão!`)})
+            });
+        }
+    }catch(err){
+        console.error(err.message)
+    }
+}, 10000)
+
 run()    
-export default mongoClient;
+// export default mongoClient;
