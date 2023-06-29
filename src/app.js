@@ -10,7 +10,6 @@ import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
 dotenv.config();
 const app = express();
 
-console.log(process.env.PORT)
 app.use(cors());
 app.use(express.json());
 
@@ -146,10 +145,13 @@ app.post('/status', async (req, res) => {
     }
 })
 
-  
 
 
+
+setInterval(async () => {
+    const participants = await db.collection("participants").find({lastStatus:{ $lte: Date.now() - 10000 }}).toArray()
+    console.log(participants)
+    }, 10000)
 // console.log(process.env.PORT, process.env.DATABASE_URL)
-
 run()    
 export default mongoClient;

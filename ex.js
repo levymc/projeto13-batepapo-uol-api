@@ -10,4 +10,5 @@
 // })
 //  .catch((err) => console.log(err.message));
 
-console.log( Date.now())
+console.log( Date.now() )
+// setInterval(()=>{console.log("oi")}, 10000)
