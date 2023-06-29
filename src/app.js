@@ -129,15 +129,15 @@ app.get('/messages', async (req, res) => {
 
 app.post('/status', async (req, res) => {
     const user = req.headers.user
-    console.log(user)
     try{
         const participant = await db.collection("participants").findOne({ name: user })
-        console.log(participant)
+        console.log("Auii",participant)
     
         if ( !user || !participant ){
             return res.sendStatus(404)
         }else{
-            participant.lastStatus = Date.now();
+            await db.collection("participant").updateOne({_id: participant._id}, { $set: {lastStatus: Date.now()}})
+            console.log("2222",participant)
             return res.sendStatus(200)
         }
     }catch(err){
