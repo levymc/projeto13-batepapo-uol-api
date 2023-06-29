@@ -120,6 +120,7 @@ app.get('/messages', async (req, res) => {
         $or: [
             { to:  user},
             { to: "Todos"},
+            { from: user }
         ]
     }).toArray()
 
