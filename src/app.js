@@ -108,17 +108,17 @@ app.post('/messages', async (req, res) => {
 
 
 app.get('/messages', async (req, res) => {
-    const { user } = req.headers
-
+    const User  = req.headers.user
+    console.log(User)
     let { limit } = req.query
     limit = parseInt(limit)
     const { error } = schemaLimit.validate({ limit })
 
     const messages = await db.collection("messages").find({
         $or: [
-            { to:  user},
+            { to:  User},
             { to: "Todos"},
-            { from: user },
+            { from: User },
             { type: "message" }
         ]
     }).toArray()
