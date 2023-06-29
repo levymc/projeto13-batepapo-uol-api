@@ -36,23 +36,24 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     const { name } = req.body;
-    name = stripHtml(name).result
-    const { error } = schemaName.validate({ name });
-  
+    const corrName = stripHtml(name).result
+    console.log(corrName)
+    const { error } = schemaName.validate({ corrName });
+    
     if (error) {
         return res.sendStatus(422)
     } else {
         try{
-            const participant = await db.collection("participants").findOne({ name: name })
+            const participant = await db.collection("participants").findOne({ name: corrName })
             if (!participant) {
                 const message = { 
-                    from: name,
+                    from: corrName,
                     to: 'Todos',
                     text: 'entra na sala...',
                     type: 'status',
                     time: dayjs().format('HH:mm:s')
                 }
-                await db.collection("participants").insertOne({ name: name, lastStatus: Date.now() })
+                await db.collection("participants").insertOne({ name: corrName, lastStatus: Date.now() })
                 await db.collection("messages").insertOne(message)
                 res.sendStatus(201)
                 
@@ -76,21 +77,21 @@ app.get('/participants', async (req, res) => {
 app.post('/messages', async (req, res) => {
     const { to, text, type } = req.body
     const from = req.headers.user
-    to = stripHtml(to).result
-    text = stripHtml(text).result
-    type = stripHtml(type).result
-    from = stripHtml(from).result
+    const corrTo = stripHtml(to).result
+    const corrText = stripHtml(text).result
+    const corrType = stripHtml(type).result
+    const corrFrom = stripHtml(from).result
 
-    const participant = await db.collection("participants").findOne({ name: { $eq: from } })
-    const { error } = schemaMessage.validate({ to, text, type, from });
+    const participant = await db.collection("participants").findOne({ name: { $eq: corrFrom } })
+    const { error } = schemaMessage.validate({ corrTo, corrText, corrType, corrFrom });
     if (error || !participant){
         return res.status(422).send("Erro 422 na rota post /messages")
     }else{
         const message = {
-            from,
-            to,
-            text,
-            type,
+            corrFrom,
+            corrTo,
+            corrText,
+            corrType,
             time: dayjs().format('HH:mm:s')
         };  
         try{
@@ -171,7 +172,7 @@ setInterval(async () => {
                     time: dayjs().format('HH:mm:s')
                 })
                 await db.collection("participants").deleteOne({ _id: new ObjectId(element._id) })
-                console.log(`${element.name} foi removído da sessão!`)
+                console.log(`${element.name} foi removido da sessão!`)
             });
         }
     }catch(err){
