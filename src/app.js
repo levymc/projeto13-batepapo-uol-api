@@ -20,9 +20,8 @@ let db ;
 
 const run = async () => {
   try {
-    await mongoClient.connect().then(() => {
-        console.log('Conexão!!!')
-    })
+    await mongoClient.connect()
+    console.log('Conexão!!!')
     app.listen(process.env.PORT, () => {
         console.log(`Servidor Express rodando na url: http://localhost:${process.env.PORT}`);
     });
@@ -61,13 +60,12 @@ app.post('/participants', async (req, res) => {
         }catch(err){
             res.status(500).send(err.message)
         }
-        
     }
-  });
+});
+
 
 app.get('/participants', async (req, res) => {
     const participantsList = await db.collection("participants").find().toArray()
-    // console.log(participantsList)
     return res.send(participantsList)
 });
 
@@ -77,11 +75,7 @@ app.post('/messages', async (req, res) => {
     const from = req.headers.user;
 
     const participant = await db.collection("participants").findOne({ name: { $eq: from } })
-
-    console.log(participant)
-
     const { error } = schemaMessage.validate({ to, text, type, from });
-
     if (error || !participant){
         return res.status(422).send("Erro 422 na rota post /messages")
     }else{
@@ -92,13 +86,15 @@ app.post('/messages', async (req, res) => {
             type,
             time: dayjs().format('HH:mm:s')
         };  
-        db.collection("messages").insertOne(message).then(() =>{
+        try{
+            await db.collection("messages").insertOne(message)
             console.log("Mensagem: ", message)
             return res.status(201).send(`${message}`)
-        }).catch(err => {
+        }
+        catch(err){
             console.log(err.message)
             return res.status(409).send("Ocorreu algum erro no Banco.")
-        })
+        }
     }
 })
 
