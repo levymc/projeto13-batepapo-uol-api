@@ -109,7 +109,8 @@ app.get('/messages', async (req, res) => {
         $or: [
             { to:  user},
             { to: "Todos"},
-            { from: user }
+            { from: user },
+            { type: "message" }
         ]
     }).toArray()
 
@@ -149,6 +150,7 @@ app.post('/status', async (req, res) => {
 
 
 setInterval(async () => {
+    console.log("Rodou")
     try{
         const participants = await db.collection("participants").find({lastStatus:{ $lte: Date.now() - 10000 }}).toArray()
         if(participants){
@@ -160,7 +162,8 @@ setInterval(async () => {
                     type: 'status',
                     time: dayjs().format('HH:mm:s')
                 })
-                await db.collection("participants").deleteOne({ _id: new ObjectId(element._id) }).then(() => {console.log(`${element.name} foi removído da sessão!`)})
+                await db.collection("participants").deleteOne({ _id: new ObjectId(element._id) })
+                console.log(`${element.name} foi removído da sessão!`)
             });
         }
     }catch(err){
