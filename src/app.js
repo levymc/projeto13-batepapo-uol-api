@@ -109,20 +109,28 @@ app.post('/messages', async (req, res) => {
     }
 })
 
-app.get('/messages', (req, res) => {
+app.get('/messages', async (req, res) => {
     const { user } = req.headers
 
     let { limit } = req.query
     limit = parseInt(limit)
     const { error } = schemaLimit.validate({ limit })
 
-    if(error){
-        return res.status(422).json({ error: error.details[0].message });
+    const messages = await db.collection("messages").find({
+        $or: [
+            { to:  user},
+            { to: "Todos"},
+        ]
+    }).toArray()
+
+
+    if( error || !messages ){
+        return res.sendStatus(422)
     }else{
         if (limit){
-            res.status(201).send(`Limite: ${limit}, User: ${user}`)
+            res.status(200).send(messages.slice(messages.length - limit, messages.length))
         }else{
-            res.status(201).send("ALL")
+            res.status(200).send(messages)
         }
     }
 })
