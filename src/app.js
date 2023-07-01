@@ -36,9 +36,9 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     const { name } = req.body;
-    const corrName = stripHtml(name).result
-    console.log(corrName)
-    const { error } = schemaName.validate({ corrName });
+    // const corrName = stripHtml(name).result
+    // console.log(corrName)
+    const { error } = schemaName.validate({ name });
     
     if (error) {
         return res.sendStatus(422)
