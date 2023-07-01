@@ -34,7 +34,6 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     let { name } = req.body;
-    name = (stripHtml(name).result).trim()
     console.log(name, name.length)
     const { error } = schemaName.validate({ name });
     
@@ -42,6 +41,7 @@ app.post('/participants', async (req, res) => {
         console.log(error)
         return res.sendStatus(422)
     } else {
+        name = (stripHtml(name).result).trim()
         try{
             const participant = await db.collection("participants").findOne({ name: name })
             if (!participant) {
@@ -76,10 +76,7 @@ app.get('/participants', async (req, res) => {
 app.post('/messages', async (req, res) => {
     let { to, text, type } = req.body
     let from = req.headers.user
-    to = (stripHtml(to).result).trim()
-    text = (stripHtml(text).result).trim()
-    type = (stripHtml(type).result).trim()
-    from = (stripHtml(from).result).trim()
+    
 
     console.log(to, text, type, from)
 
@@ -88,6 +85,10 @@ app.post('/messages', async (req, res) => {
     if (error || !participant){
         return res.status(422).send("Erro 422 na rota post /messages")
     }else{
+        to = (stripHtml(to).result).trim()
+        text = (stripHtml(text).result).trim()
+        type = (stripHtml(type).result).trim()
+        from = (stripHtml(from).result).trim()
         const message = {
             from,
             to,
