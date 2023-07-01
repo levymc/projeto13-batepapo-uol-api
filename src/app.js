@@ -36,6 +36,7 @@ app.post('/participants', async (req, res) => {
     const { error } = schemaName.validate({ name });
   
     if (error) {
+        console.log(error)
         return res.sendStatus(422)
     } else {
         try{
@@ -129,7 +130,9 @@ app.get('/messages', async (req, res) => {
 
 app.post('/status', async (req, res) => {
     const now = Date.now()
-    const user = req.headers.user
+    const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
+    console.log(1, user)
+    
     try{
         const participant = await db.collection("participants").findOne({ name: user })
         console.log("Auii",participant)

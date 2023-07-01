@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-axios.post('http://localhost:5000/participants',{name: "Thanos"}).then(res => {
-    console.log(res.data)
-}).catch(err => {
-    console.log(err)
-})
+// axios.post('http://localhost:5000/participants',{name: "Tháis"}).then(res => {
+//     console.log(res.data)
+// }).catch(err => {
+//     console.log(err)
+// })
 
 const headers = {
-    User: 'Thais'
+    User: 'Tháis'
 };
 
 // axios.post('http://localhost:5000/messages',{
@@ -20,8 +20,8 @@ const headers = {
 //     console.log(err)
 // })
 
-// axios.post('http://localhost:5000/status', {} ,{ headers }).then(res => {
-//         console.log(res.data)
-//     }).catch(err => {
-//         console.log(err)
-//     })
+axios.post('http://localhost:5000/status', {} ,{ headers }).then(res => {
+        console.log(res.data)
+    }).catch(err => {
+        console.log(err)
+    })
