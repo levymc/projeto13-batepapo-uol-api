@@ -159,6 +159,18 @@ app.post('/status', async (req, res) => {
 })
 
 
+app.delete('/messages/:messageId', async (req, res) => {
+    const messageId = req.params.messageId;
+    const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
+
+    const messagesDeleted = await db.collection("messages").deleteOne(
+            { _id: {$eq: new ObjectId(messageId)}},
+    )
+    const deletedCount = messagesDeleted.deletedCount
+
+
+    res.send(`Mensagem de ID ${messageId} foi deletada com sucesso.`);
+  });
 
 
 setInterval(async () => {
