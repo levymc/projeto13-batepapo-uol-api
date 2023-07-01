@@ -32,9 +32,11 @@ const run = async () => {
 
 
 app.post('/participants', async (req, res) => {
-    const { name } = req.body;
+    let { name } = req.body;
+    name = stripHtml(name).result
+    console.log(name)
     const { error } = schemaName.validate({ name });
-  
+    
     if (error) {
         console.log(error)
         return res.sendStatus(422)
@@ -71,8 +73,14 @@ app.get('/participants', async (req, res) => {
 
 
 app.post('/messages', async (req, res) => {
-    const { to, text, type } = req.body
-    const from = req.headers.user
+    let { to, text, type } = req.body
+    let from = req.headers.user
+    to = stripHtml(to).result
+    text = stripHtml(text).result
+    type = stripHtml(type).result
+    from = stripHtml(from).result
+
+    console.log(to, text, type, from)
 
     const participant = await db.collection("participants").findOne({ name: { $eq: from } })
     const { error } = schemaMessage.validate({ to, text, type, from });
