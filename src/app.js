@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
+import { stripHtml } from "string-strip-html";
 
 
 dotenv.config();
