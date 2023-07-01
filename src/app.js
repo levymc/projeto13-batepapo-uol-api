@@ -100,7 +100,8 @@ app.post('/messages', async (req, res) => {
 
 
 app.get('/messages', async (req, res) => {
-    const { user } = req.headers
+    const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
+    // console.log(2, user)
 
     let { limit } = req.query
     limit = parseInt(limit)
@@ -131,7 +132,6 @@ app.get('/messages', async (req, res) => {
 app.post('/status', async (req, res) => {
     const now = Date.now()
     const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
-    console.log(1, user)
     
     try{
         const participant = await db.collection("participants").findOne({ name: user })
