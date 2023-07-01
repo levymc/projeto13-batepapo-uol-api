@@ -34,7 +34,6 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     let { name } = req.body;
-    console.log(name, name.length)
     const { error } = schemaName.validate({ name });
     
     if (error) {
@@ -164,13 +163,21 @@ app.delete('/messages/:messageId', async (req, res) => {
     const messageId = req.params.messageId;
     const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
 
-    const messagesDeleted = await db.collection("messages").deleteOne(
+    try{
+        const messagesDeleted = await db.collection("messages").deleteOne(
             { _id: {$eq: new ObjectId(messageId)}},
-    )
-    const deletedCount = messagesDeleted.deletedCount
+        )
+        if (messagesDeleted.deletedCount === 0){
+            res.sendStatus(404)
+        }
+        res.send(`Mensagem de ID ${messageId} foi deletada com sucesso.`);
+
+    }catch(err){
+        console.log(err)
+    }
+    
 
 
-    res.send(`Mensagem de ID ${messageId} foi deletada com sucesso.`);
   });
 
 
@@ -194,7 +201,7 @@ setInterval(async () => {
     }catch(err){
         console.error(err.message)
     }
-}, 20000)
+}, 10000)
 
 run()    
 // export default mongoClient;
