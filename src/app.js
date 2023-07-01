@@ -35,25 +35,25 @@ const run = async () => {
 
 
 app.post('/participants', async (req, res) => {
-    const { name } = req.body;
-    // const corrName = stripHtml(name).result
-    // console.log(corrName)
+    let { name } = req.body;
+    name = stripHtml(name).result
+    console.log(name)
     const { error } = schemaName.validate({ name });
     
     if (error) {
         return res.sendStatus(422)
     } else {
         try{
-            const participant = await db.collection("participants").findOne({ name: corrName })
+            const participant = await db.collection("participants").findOne({ name: name })
             if (!participant) {
                 const message = { 
-                    from: corrName,
+                    from: name,
                     to: 'Todos',
                     text: 'entra na sala...',
                     type: 'status',
                     time: dayjs().format('HH:mm:s')
                 }
-                await db.collection("participants").insertOne({ name: corrName, lastStatus: Date.now() })
+                await db.collection("participants").insertOne({ name: name, lastStatus: Date.now() })
                 await db.collection("messages").insertOne(message)
                 res.sendStatus(201)
                 

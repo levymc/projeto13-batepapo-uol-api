@@ -3,7 +3,7 @@ import { arrayCadastro } from './varDec.js';
 
 
 export const schemaName = Joi.object().keys({
-    corrName: Joi.string().min(1).required(),
+    name: Joi.string().min(1).required(),
 });
 
 export const schemaMessage = Joi.object().keys({

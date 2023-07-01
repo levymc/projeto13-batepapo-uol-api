@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.post('http://localhost:5000/participants',{name: "L"}).then(res => {
+axios.post('http://localhost:5000/participants',{name: "<L>LALA"}).then(res => {
     console.log(res.data)
 }).catch(err => {
     console.log(err)
