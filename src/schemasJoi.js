@@ -7,10 +7,10 @@ export const schemaName = Joi.object().keys({
 });
 
 export const schemaMessage = Joi.object().keys({
-    corrTo: Joi.string().min(1).required().valid(...arrayCadastro.map(participant => participant.name)),
-    corrText: Joi.string().min(1).required(),
-    corrType: Joi.string().valid('message', 'private_message').required(),
-    corrFrom: Joi.string().required()
+    to: Joi.string().min(1).required().valid(...arrayCadastro.map(participant => participant.name)),
+    text: Joi.string().min(1).required(),
+    type: Joi.string().valid('message', 'private_message').required(),
+    from: Joi.string().required()
 })
   
 

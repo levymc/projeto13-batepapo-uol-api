@@ -75,23 +75,25 @@ app.get('/participants', async (req, res) => {
 
 
 app.post('/messages', async (req, res) => {
-    const { to, text, type } = req.body
-    const from = req.headers.user
-    const corrTo = stripHtml(to).result
-    const corrText = stripHtml(text).result
-    const corrType = stripHtml(type).result
-    const corrFrom = stripHtml(from).result
+    let { to, text, type } = req.body
+    let from = req.headers.user
+    to = stripHtml(to).result
+    text = stripHtml(text).result
+    type = stripHtml(type).result
+    from = stripHtml(from).result
 
-    const participant = await db.collection("participants").findOne({ name: { $eq: corrFrom } })
-    const { error } = schemaMessage.validate({ corrTo, corrText, corrType, corrFrom });
+    console.log(to, text, type, from)
+
+    const participant = await db.collection("participants").findOne({ name: { $eq: from } })
+    const { error } = schemaMessage.validate({ to, text, type, from });
     if (error || !participant){
         return res.status(422).send("Erro 422 na rota post /messages")
     }else{
         const message = {
-            corrFrom,
-            corrTo,
-            corrText,
-            corrType,
+            from,
+            to,
+            text,
+            type,
             time: dayjs().format('HH:mm:s')
         };  
         try{
