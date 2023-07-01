@@ -34,8 +34,8 @@ const run = async () => {
 
 app.post('/participants', async (req, res) => {
     let { name } = req.body;
-    name = stripHtml(name).result
-    console.log(name)
+    name = (stripHtml(name).result).trim()
+    console.log(name, name.length)
     const { error } = schemaName.validate({ name });
     
     if (error) {
@@ -76,10 +76,10 @@ app.get('/participants', async (req, res) => {
 app.post('/messages', async (req, res) => {
     let { to, text, type } = req.body
     let from = req.headers.user
-    to = stripHtml(to).result
-    text = stripHtml(text).result
-    type = stripHtml(type).result
-    from = stripHtml(from).result
+    to = (stripHtml(to).result).trim()
+    text = (stripHtml(text).result).trim()
+    type = (stripHtml(type).result).trim()
+    from = (stripHtml(from).result).trim()
 
     console.log(to, text, type, from)
 
@@ -181,7 +181,7 @@ setInterval(async () => {
     }catch(err){
         console.error(err.message)
     }
-}, 10000)
+}, 20000)
 
 run()    
 // export default mongoClient;
