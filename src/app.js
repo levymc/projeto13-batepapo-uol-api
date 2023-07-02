@@ -178,7 +178,7 @@ app.delete('/messages/:messageId', async (req, res) => {
         res.send(`Mensagem de ID ${messageId} foi deletada com sucesso.`);
 
     }catch(err){
-        res.sendStatus(500)
+        res.sendStatus(404)
     }
 })
 
