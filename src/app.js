@@ -164,20 +164,15 @@ app.delete('/messages/:messageId', async (req, res) => {
     const user = Buffer.from(req.headers.user, 'latin1').toString('latin1')
 
     try{
-        const message = await db.collection("messages").findOne({
-            $and: [
-                {  _id: {$eq: new ObjectId(messageId)} },
-                { from: {$eq: user} },
-            ]
-        })
+        const message = await db.collection("messages").findOne({  _id: {$eq: new ObjectId(messageId)} })
         console.log(333, message)
 
         const messagesDeleted = await db.collection("messages").deleteOne(
             { _id: {$eq: new ObjectId(messageId)}},
         )
-        if(!message){
+        if( message.from != user ){
             res.sendStatus(401)
-        }else if (messagesDeleted.deletedCount === 0){
+        }else if (messagesDeleted.deletedCount === 0 || !message){
             res.sendStatus(404)
         }
         res.send(`Mensagem de ID ${messageId} foi deletada com sucesso.`);
