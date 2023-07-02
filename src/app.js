@@ -188,6 +188,8 @@ app.put('/messages/:messageId', async (req, res) => {
     const from = Buffer.from(req.headers.user, 'latin1').toString('latin1')
     let { to, text, type } = req.body
     const { error } = schemaMessage.validate({ to, text, type, from });
+    console.log(to, text, type, from)
+
     if (error) {
         return res.sendStatus(422)
     }
@@ -195,7 +197,8 @@ app.put('/messages/:messageId', async (req, res) => {
         to = (stripHtml(to).result).trim()
         text = (stripHtml(text).result).trim()
         type = (stripHtml(type).result).trim()
-        from = (stripHtml(from).result).trim()
+        // from = (stripHtml(from).result).trim()
+        console.log(messageId)
         const message = await db.collection("messages").findOne({
             $and: [
                 {  _id: {$eq: new ObjectId(messageId)} },
@@ -214,7 +217,7 @@ app.put('/messages/:messageId', async (req, res) => {
         res.send(`Mensagem de ID ${messageId} foi atualizada com sucesso!!!`);
 
     }catch(err){
-        res.sendStatus(500)
+        res.status(500).send(err.message.de)
     }
 })
 
@@ -239,7 +242,7 @@ setInterval(async () => {
     }catch(err){
         console.error(err.message)
     }
-}, 10000)
+}, 100000)
 
 run()    
 // export default mongoClient;
