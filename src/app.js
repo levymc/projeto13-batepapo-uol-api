@@ -217,7 +217,7 @@ app.put('/messages/:messageId', async (req, res) => {
         res.send(`Mensagem de ID ${messageId} foi atualizada com sucesso!!!`);
 
     }catch(err){
-        res.status(500).send(err.message.de)
+        res.status(401).send(err.message.de)
     }
 })
 
