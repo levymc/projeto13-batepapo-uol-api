@@ -185,7 +185,7 @@ app.delete('/messages/:messageId', async (req, res) => {
 
 app.put('/messages/:messageId', async (req, res) => {
     const messageId = req.params.messageId;
-    const from = Buffer.from(req.headers.user, 'latin1').toString('latin1')
+    let from = req.headers.user
     let { to, text, type } = req.body
     const { error } = schemaMessage.validate({ to, text, type, from });
     console.log(to, text, type, from)
@@ -197,7 +197,7 @@ app.put('/messages/:messageId', async (req, res) => {
         to = (stripHtml(to).result).trim()
         text = (stripHtml(text).result).trim()
         type = (stripHtml(type).result).trim()
-        // from = (stripHtml(from).result).trim()
+        from = (stripHtml(from).result).trim()
         console.log(messageId)
         const message = await db.collection("messages").findOne({
             $and: [
