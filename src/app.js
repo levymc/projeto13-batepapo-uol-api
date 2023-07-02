@@ -242,7 +242,7 @@ setInterval(async () => {
     }catch(err){
         console.error(err.message)
     }
-}, 100000)
+}, 10000)
 
 run()    
 // export default mongoClient;
