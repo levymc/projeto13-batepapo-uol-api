@@ -185,10 +185,43 @@ app.delete('/messages/:messageId', async (req, res) => {
     }catch(err){
         res.sendStatus(500)
     }
-    
+})
 
 
-  });
+app.put('/messages/:messageId', async (req, res) => {
+    const messageId = req.params.messageId;
+    const from = Buffer.from(req.headers.user, 'latin1').toString('latin1')
+    let { to, text, type } = req.body
+    const { error } = schemaMessage.validate({ to, text, type, from });
+    if (error) {
+        return res.sendStatus(422)
+    }
+    try{
+        to = (stripHtml(to).result).trim()
+        text = (stripHtml(text).result).trim()
+        type = (stripHtml(type).result).trim()
+        from = (stripHtml(from).result).trim()
+        const message = await db.collection("messages").findOne({
+            $and: [
+                {  _id: {$eq: new ObjectId(messageId)} },
+                { from: {$eq: from} },
+            ]
+        })
+        if(!message){
+            res.sendStatus(404)
+        }else if( message.from != from ){
+            res.sendStatus(401)
+        }
+        await db.collection("messages").updateOne(
+            { _id: {$eq: new ObjectId(messageId)}},
+            {$set: {from: from, to: to, text: text, type: type, time: dayjs().format('HH:mm:s')}}
+        )
+        res.send(`Mensagem de ID ${messageId} foi atualizada com sucesso!!!`);
+
+    }catch(err){
+        res.sendStatus(500)
+    }
+})
 
 
 setInterval(async () => {
