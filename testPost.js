@@ -7,7 +7,7 @@ import axios from 'axios'
 // })
 
 const headers = {
-    User: 'Thais'
+    User: 'sad'
 };
 
 // axios.post('http://localhost:5000/messages',{
@@ -26,7 +26,7 @@ const headers = {
 //         console.log(err)
 //     })
 
-const messageId = '649f2f8c01b67cf6e1114129'
+const messageId = '649f52bda9f12cfa367ed44e'
 
 axios.delete(`http://localhost:5000/messages/${messageId}`,{ headers })
   .then(response => {
