@@ -6,14 +6,19 @@ import { arrayCadastro } from './varDec.js';
 import dayjs from 'dayjs'
 import { schemaName, schemaMessage, schemaLimit } from './schemasJoi.js';
 import { stripHtml } from "string-strip-html";
-
+import path from 'path'
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+const frontPath = path.join(process.cwd(), 'front/front-bate-papo-uol');
+app.use(express.static(frontPath));
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(frontPath, 'index.html'));
+  });
 
 const mongoClient = new MongoClient(process.env.DATABASE_URL)
 let db ;
