@@ -199,12 +199,7 @@ app.put('/messages/:messageId', async (req, res) => {
         type = (stripHtml(type).result).trim()
         from = (stripHtml(from).result).trim()
         console.log(messageId)
-        const message = await db.collection("messages").findOne({
-            $and: [
-                {  _id: {$eq: new ObjectId(messageId)} },
-                { from: {$eq: from} },
-            ]
-        })
+        const message = await db.collection("messages").findOne({  _id: {$eq: new ObjectId(messageId)} })
         if(!message){
             res.sendStatus(404)
         }else if( message.from != from ){
