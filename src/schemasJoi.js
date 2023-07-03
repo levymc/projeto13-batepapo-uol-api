@@ -8,7 +8,7 @@ export const schemaName = Joi.object().keys({
 });
 
 export const schemaMessage = Joi.object().keys({
-    to: Joi.string().min(1).required().valid(...arrayCadastro.map(participant => participant.name)),
+    to: Joi.string().min(1).required(),
     text: Joi.string().min(1).required(),
     type: Joi.string().valid('message', 'private_message').required(),
     from: Joi.string().required()

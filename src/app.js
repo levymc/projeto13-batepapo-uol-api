@@ -85,8 +85,9 @@ app.post('/messages', async (req, res) => {
     console.log(to, text, type, from)
 
     const participant = await db.collection("participants").findOne({ name: { $eq: from } })
+    const participant2 = await db.collection("participants").findOne({ name: { $eq: to } })
     const { error } = schemaMessage.validate({ to, text, type, from });
-    if (error || !participant){
+    if (error || !participant || !participant2){
         return res.status(422).send("Erro 422 na rota post /messages")
     }else{
         to = (stripHtml(to).result).trim()
